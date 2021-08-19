@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binance.Trading.Domain", "..\Binance.Trading.Domain\Binance.Trading.Domain.csproj", "{A8EAB5E8-83C9-4091-8474-63296759A7A9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binance.Net", "..\..\..\..\Binance.Net\Binance.Net\Binance.Net.csproj", "{63121EB6-A3C1-440A-A710-A0F6277F3783}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binance.Trading.Server", "Binance.Trading.Server.csproj", "{02D76C75-5A3F-4D82-A50A-FEDBBF4EA2B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binance.Trading.Server", "Binance.Trading.Server.csproj", "{02D76C75-5A3F-4D82-A50A-FEDBBF4EA2B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binance.Net", "..\Binance.Net\Binance.Net\Binance.Net.csproj", "{7A17107F-1129-4B38-964D-E7E99F52D518}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,14 @@ Global
 		{A8EAB5E8-83C9-4091-8474-63296759A7A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8EAB5E8-83C9-4091-8474-63296759A7A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8EAB5E8-83C9-4091-8474-63296759A7A9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{63121EB6-A3C1-440A-A710-A0F6277F3783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{63121EB6-A3C1-440A-A710-A0F6277F3783}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{63121EB6-A3C1-440A-A710-A0F6277F3783}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{63121EB6-A3C1-440A-A710-A0F6277F3783}.Release|Any CPU.Build.0 = Release|Any CPU
 		{02D76C75-5A3F-4D82-A50A-FEDBBF4EA2B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{02D76C75-5A3F-4D82-A50A-FEDBBF4EA2B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02D76C75-5A3F-4D82-A50A-FEDBBF4EA2B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02D76C75-5A3F-4D82-A50A-FEDBBF4EA2B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A17107F-1129-4B38-964D-E7E99F52D518}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A17107F-1129-4B38-964D-E7E99F52D518}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A17107F-1129-4B38-964D-E7E99F52D518}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A17107F-1129-4B38-964D-E7E99F52D518}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
