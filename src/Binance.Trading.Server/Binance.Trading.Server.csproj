@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <Folder Include="Services\Automation\" />
-    <Folder Include="Services\Trading\" />
   </ItemGroup>
 
   <ItemGroup>

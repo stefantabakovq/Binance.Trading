@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Binance.Net;
+using Binance.Trading.Server.TradingBots;
 using Microsoft.Extensions.Configuration;
 
 namespace Binance.Trading.Server
@@ -11,6 +12,7 @@ namespace Binance.Trading.Server
     {
         private readonly BinanceClient _client;
         private readonly IConfiguration _configuration;
+        public List<TradingBot> Bots { get; set; }
 
         public Server(BinanceClient client, IConfiguration configuration)
         {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Binance.Trading.Domain.Models;
 
 namespace Binance.Trading.Domain.Services
