@@ -2,5 +2,13 @@
     "ApiKey": {
         "Key": "RYBp8lHEKbhmGrHOICwTfNcQQXXq2gabWWh8UctsQum5z5fsGBLBOAhwLrYAH8Pm",
         "Secret": "dQH4iksuP0MsDfF60CRh9qvqzZf7w1ROaqczO8MawRFTo0gL8QjSfLAdOLtWCItu"
+    },
+    "HeikinAshiSettings": {
+        "MaxPosBalanceAsPerc": 10.0,
+        "MaxConcurrentPositions": 10,
+        "TakeProfitPerc": 0.25,
+        "StopLossPerc": 0.1,
+        "CooldownPeriodMinutes": 0,
+        "ReversalTresshold" :  2
     }
 }

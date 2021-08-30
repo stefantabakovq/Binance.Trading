@@ -14,7 +14,9 @@ namespace Binance.Trading.Domain.Models
         public double MaxPositionSize { get; set; }
         public double MinPositionSize { get; set; }
 
-        public List<TradingStrategy> strategies { get; set; }
+        public List<string> Tickers { get; set; }
+        public List<TradingStrategy> Strategies { get; set; }
+        public List<TradingPosition> Positions { get; set; }
         public List<Dictionary<DateTime, string>> OrderLog { get; set; }
         public List<Dictionary<DateTime, string>> PositionLog { get; set; }
         public List<Dictionary<DateTime, double>> BalanceLog { get; set; }

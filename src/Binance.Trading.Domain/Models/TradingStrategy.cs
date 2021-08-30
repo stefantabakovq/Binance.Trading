@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Binance.Trading.Domain.Services;
+using Microsoft.Extensions.Configuration;
 
 namespace Binance.Trading.Domain.Models
 {
-    public class TradingStrategy : ITradingStrategy
+    public class TradingStrategy
     {
         public string StrategyName { get; set; }
         public int Period { get; set; }
 
-        public Task<TradeAction> TakeEntryDecision(string tickerName)
+        public virtual GeneralSettings GetSettings()
+            => new GeneralSettings();
+
+        public virtual Task<TradeAction> TakeEntryDecision(string tickerName)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TradeAction> TakeExitDecision(string tickerName)
+        public virtual Task<TradeAction> TakeExitDecision(string tickerName)
         {
             throw new NotImplementedException();
         }

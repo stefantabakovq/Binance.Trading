@@ -6,7 +6,6 @@ namespace Binance.Trading.Domain.Models
     {
         public TradeType type { get; set; }
         public TradeDecision action { get; set; }
-        public double amount { get; set; }
         public DateTime timeTaken { get; set; }
         public DateTime timePlaced { get; set; }
     }
