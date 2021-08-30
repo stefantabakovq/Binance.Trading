@@ -115,13 +115,23 @@ namespace Binance.Trading.Server.TradingBots
             await _client.FuturesUsdt.ChangeInitialLeverageAsync(ticker, Leverage);
             await _client.FuturesUsdt.ChangeMarginTypeAsync(ticker, Net.Enums.FuturesMarginType.Isolated);
 
-            // If all signals buy, trigger market buy
+            // If all signals buy, trigger market long
             if (entrySignals.All(x => x.Action == TradeDecision.Long))
             {
                 var iD = await _client.FuturesUsdt.Order.PlaceOrderAsync(ticker, Net.Enums.OrderSide.Buy, Net.Enums.OrderType.Market, (decimal?)0.01);
 
                 var pos = await _client.FuturesUsdt.GetPositionInformationAsync(ticker);
                 Positions.Add(new TradingPosition(ticker, 0.01, PositionDirection.Long));
+                return true;
+            }
+
+            // If all signals sell, trigger market short
+            if (entrySignals.All(x => x.Action == TradeDecision.Short))
+            {
+                var iD = await _client.FuturesUsdt.Order.PlaceOrderAsync(ticker, Net.Enums.OrderSide.Sell, Net.Enums.OrderType.Market, (decimal?)0.01);
+
+                var pos = await _client.FuturesUsdt.GetPositionInformationAsync(ticker);
+                Positions.Add(new TradingPosition(ticker, 0.01, PositionDirection.Short));
                 return true;
             }
             return false;
