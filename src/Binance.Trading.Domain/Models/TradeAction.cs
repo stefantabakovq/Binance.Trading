@@ -4,9 +4,8 @@ namespace Binance.Trading.Domain.Models
 {
     public class TradeAction
     {
-        public TradeType type { get; set; }
-        public TradeDecision action { get; set; }
-        public DateTime timeTaken { get; set; }
+        public TradeType Type { get; set; }
+        public TradeDecision Action { get; set; }
         public DateTime timePlaced { get; set; }
     }
 
@@ -20,9 +19,7 @@ namespace Binance.Trading.Domain.Models
     public enum TradeDecision : uint
     {
         Hold = 0,
-        MarketBuy = 1,
-        LimitBuy = 2,
-        MarketSell = 3,
-        LimitSell = 4
+        Long = 1,
+        Short = 3,
     }
 }

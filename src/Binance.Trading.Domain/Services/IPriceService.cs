@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Binance.Trading.Domain.Services
 {
-    public interface IPriceUpdater
+    public interface IPriceService
     {
         Task GetPricesForTicker(string tickerName);
         Task<double> GetCurrentPriceTicker(string tickerName);

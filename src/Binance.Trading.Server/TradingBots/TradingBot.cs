@@ -1,27 +1,28 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Binance.Trading.Domain.Models;
 using Binance.Trading.Domain.Services;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Binance.Net;
 
 namespace Binance.Trading.Server.TradingBots
 {
     public class TradingBot : TradingBotAbstraction, ITradingBot
     {
         protected readonly ILogger _logger;
-        protected readonly IPriceUpdater _priceUpdater;
+        protected readonly BinanceClient _client;
 
-        public TradingBot(ILogger<TradingBot> logger, IPriceUpdater priceUpdater, double balance, List<TradingStrategy> strategies, List<string> tickers)
+        protected readonly int Leverage;
+
+        public TradingBot(BinanceClient client, double balance, List<TradingStrategy> strategies, List<string> tickers, int leverage = 3)
         {
-            _logger = logger;
             Tickers = tickers;
-            Balance = balance;
+            (Balance, AvailableBalance) = (balance, balance);
             Strategies = strategies;
+            Leverage = leverage;
         }
 
         public void AddBalance(double amount)
@@ -73,9 +74,12 @@ namespace Binance.Trading.Server.TradingBots
                             // If we have enough entry positions for this ticker trigger entry
                             if (entries[ticker].Count >= _s.EntryTresshold)
                             {
-                                await TriggerEntry(ticker);
-                                entries[ticker] = new List<TradeAction>();
-                            }
+                                var success = await TriggerEntry(ticker, entries[ticker]);
+                                if(success)
+                                {
+                                    entries[ticker] = new List<TradeAction>();
+                                }
+                            }             
                         }
 
                         // If we have opened a position for this ticker, check for exits
@@ -86,8 +90,8 @@ namespace Binance.Trading.Server.TradingBots
                             // If we have enough exit signals for this ticker trigger exit
                             if (exits[ticker].Count >= _s.ExitTresshold)
                             {
-                                await TriggerExit(ticker);
-                                exits[ticker] = new List<TradeAction>();
+                                var success = await TriggerExit(ticker);
+                                if(success) exits[ticker] = new List<TradeAction>();
                             }
                         }
                     }                   
@@ -95,14 +99,32 @@ namespace Binance.Trading.Server.TradingBots
             }
         }
 
-        public async Task TriggerExit(string ticker)
+        public async Task<bool> TriggerExit(string ticker)
         {
 
         }
 
-        public async Task TriggerEntry(string ticker)
+        public async Task<bool> TriggerEntry(string ticker, List<TradeAction> entrySignals)
         {
+            var balance = await _client.FuturesUsdt.Account.GetBalanceAsync();
 
+            // If all signals uncertain, dont take entry
+            if (entrySignals.All(x => x.Action == TradeDecision.Hold)) return false;
+
+            // Set leverage and mode for this ticker
+            await _client.FuturesUsdt.ChangeInitialLeverageAsync(ticker, Leverage);
+            await _client.FuturesUsdt.ChangeMarginTypeAsync(ticker, Net.Enums.FuturesMarginType.Isolated);
+
+            // If all signals buy, trigger market buy
+            if (entrySignals.All(x => x.Action == TradeDecision.Long))
+            {
+                var iD = await _client.FuturesUsdt.Order.PlaceOrderAsync(ticker, Net.Enums.OrderSide.Buy, Net.Enums.OrderType.Market, (decimal?)0.01);
+
+                var pos = await _client.FuturesUsdt.GetPositionInformationAsync(ticker);
+                Positions.Add(new TradingPosition(ticker, 0.01, PositionDirection.Long));
+                return true;
+            }
+            return false;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

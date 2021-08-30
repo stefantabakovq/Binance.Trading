@@ -4,7 +4,7 @@ using Binance.Trading.Domain.Services;
 
 namespace Binance.Trading.Server.Services.Prices
 {
-    public class PriceUpdater : IPriceUpdater
+    public class PriceUpdater : IPriceService
     {
         public Task<double> GetCurrentPriceTicker(string tickerName)
         {

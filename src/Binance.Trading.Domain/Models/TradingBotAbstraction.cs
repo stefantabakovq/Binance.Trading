@@ -10,6 +10,7 @@ namespace Binance.Trading.Domain.Models
     {
         public string Name { get; set; }
         public double Balance { get; set; }
+        public double AvailableBalance { get; set; }
         public string InstanceID { get; set; }
         public double MaxPositionSize { get; set; }
         public double MinPositionSize { get; set; }
