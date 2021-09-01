@@ -18,8 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Binance.Net\Binance.Net\Binance.Net.csproj" />
-    <ProjectReference Include="..\Binance.Net\Binance.Net\Binance.Net.csproj" />
+    <ProjectReference Include="..\Binance.Net\Binance.Net.csproj" />
     <ProjectReference Include="..\Binance.Trading.Domain\Binance.Trading.Domain.csproj" />
   </ItemGroup>
 

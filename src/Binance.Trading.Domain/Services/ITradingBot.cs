@@ -14,8 +14,6 @@ namespace Binance.Trading.Domain.Services
         Task<string> ProduceReport(DateTime startTime, DateTime endTime);
         void AddStrategy(TradingStrategy strategy);
         void RemoveStrategy(string Name);
-        Task<bool> LinkStrategies(TradingStrategy stratOne, TradingStrategy stratTwo);
-        string GiveUpdate();
         public Task StartAsync(CancellationToken cancellationToken);
         public Task StopAsync(CancellationToken cancellationToken);
     }

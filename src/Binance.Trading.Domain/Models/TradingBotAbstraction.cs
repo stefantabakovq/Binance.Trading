@@ -18,6 +18,7 @@ namespace Binance.Trading.Domain.Models
         public List<string> Tickers { get; set; }
         public List<TradingStrategy> Strategies { get; set; }
         public List<TradingPosition> Positions { get; set; }
+        public List<TradingOrder> Orders { get; set; }
         public List<Dictionary<DateTime, string>> OrderLog { get; set; }
         public List<Dictionary<DateTime, string>> PositionLog { get; set; }
         public List<Dictionary<DateTime, double>> BalanceLog { get; set; }

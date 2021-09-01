@@ -19,6 +19,7 @@ namespace Binance.Trading.Server.TradingBots
 
         public TradingBot(BinanceClient client, double balance, List<TradingStrategy> strategies, List<string> tickers, int leverage = 3)
         {
+            _client = client;
             Tickers = tickers;
             (Balance, AvailableBalance) = (balance, balance);
             Strategies = strategies;
@@ -33,13 +34,9 @@ namespace Binance.Trading.Server.TradingBots
             Strategies.Add(strategy);
         }
 
-        public string GiveUpdate()
+        public override string ToString()
             => $"{DateTime.Now} - - - {InstanceID} | BOT {Name} | BALANCE : {Balance}";
-
-        public Task<bool> LinkStrategies(TradingStrategy stratOne, TradingStrategy stratTwo)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public Task<string> ProduceReport(DateTime startTime, DateTime endTime)
         {
@@ -58,83 +55,119 @@ namespace Binance.Trading.Server.TradingBots
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                Dictionary<string, List<TradeAction>> entries = new Dictionary<string, List<TradeAction>>();
-                Dictionary<string, List<TradeAction>> exits = new Dictionary<string, List<TradeAction>>();
+                if(Balance != 0)
+                    await CycleEntries();
+                if(Positions.Count != 0)
+                    await CycleExits();
+            }                   
+        }
 
-                foreach (TradingStrategy strat in Strategies)
+        private async Task CycleEntries()
+        {
+            Dictionary<string, List<TradeAction>> entries = new Dictionary<string, List<TradeAction>>();
+            foreach (TradingStrategy strat in Strategies)
+            {
+                var _s = strat.GetSettings();
+                foreach (var ticker in Tickers)
                 {
-                    var _s = strat.GetSettings();
-                    foreach(var ticker in Tickers)
+                    // If we havent reached max positions and havent already opened a position for this ticker
+                    if (Positions.Count < _s.MaxConcurrentPositions && !Positions.Where(x => x.Ticker == ticker).Any())
                     {
-                        // If we havent reached max positions and havent already opened a position for this ticker
-                        if (Positions.Count < _s.MaxConcurrentPositions && !Positions.Where(x => x.Ticker == ticker).Any())
+                        var entryDecision = await strat.TakeEntryDecision(ticker);
+                        entries[ticker].Add(entryDecision);
+                        // If we have enough entry positions for this ticker trigger entry
+                        if (entries[ticker].Count >= _s.EntryTresshold)
                         {
-                            var entryDecision = await strat.TakeEntryDecision(ticker);
-                            entries[ticker].Add(entryDecision);
-                            // If we have enough entry positions for this ticker trigger entry
-                            if (entries[ticker].Count >= _s.EntryTresshold)
+                            var success = await TriggerEntry(ticker, entries[ticker]);
+                            if (success)
                             {
-                                var success = await TriggerEntry(ticker, entries[ticker]);
-                                if(success)
-                                {
-                                    entries[ticker] = new List<TradeAction>();
-                                }
-                            }             
-                        }
-
-                        // If we have opened a position for this ticker, check for exits
-                        if(Positions.Where(x => x.Ticker == ticker).Any())
-                        {
-                            var exitDecision = await strat.TakeExitDecision(ticker);
-                            exits[ticker].Add(exitDecision);
-                            // If we have enough exit signals for this ticker trigger exit
-                            if (exits[ticker].Count >= _s.ExitTresshold)
-                            {
-                                var success = await TriggerExit(ticker);
-                                if(success) exits[ticker] = new List<TradeAction>();
+                                entries[ticker] = new List<TradeAction>();
                             }
                         }
-                    }                   
+                    }
                 }
             }
         }
 
-        public async Task<bool> TriggerExit(string ticker)
+        private async Task CycleExits()
         {
-
+            Dictionary<string, List<TradeAction>> exits = new Dictionary<string, List<TradeAction>>();
+            foreach (TradingStrategy strat in Strategies)
+            {
+                var _s = strat.GetSettings();
+                foreach (var ticker in Tickers)
+                {
+                    // If we have opened a position for this ticker, check for exits
+                    if (Positions.Where(x => x.Ticker == ticker).Any())
+                    {
+                        var exitDecision = await strat.TakeExitDecision(ticker);
+                        exits[ticker].Add(exitDecision);
+                        // If we have enough exit signals for this ticker trigger exit
+                        if (exits[ticker].Count >= _s.ExitTresshold)
+                        {
+                            var success = await TriggerExit(ticker);
+                            if (success) exits[ticker] = new List<TradeAction>();
+                        }
+                    }
+                }
+            }
         }
 
-        public async Task<bool> TriggerEntry(string ticker, List<TradeAction> entrySignals)
+        private async Task<bool> TriggerExit(string ticker, List<TradeAction> exitSignals)
         {
-            var balance = await _client.FuturesUsdt.Account.GetBalanceAsync();
+            if (exitSignals.All(x => x.Action == TradeDecision.Hold)) return false;
 
+            if(exitSignals.All(x => x.Action == exitSignals[0].Action))
+            {
+                var currentPosition = Positions.Find(x => x.Ticker == ticker);
+                var closeOrderId = 
+            }           
+        }
+
+        private async Task<bool> TriggerEntry(string ticker, List<TradeAction> entrySignals, double amount)
+        {
             // If all signals uncertain, dont take entry
             if (entrySignals.All(x => x.Action == TradeDecision.Hold)) return false;
 
-            // Set leverage and mode for this ticker
             await _client.FuturesUsdt.ChangeInitialLeverageAsync(ticker, Leverage);
             await _client.FuturesUsdt.ChangeMarginTypeAsync(ticker, Net.Enums.FuturesMarginType.Isolated);
 
-            // If all signals buy, trigger market long
             if (entrySignals.All(x => x.Action == TradeDecision.Long))
             {
-                var iD = await _client.FuturesUsdt.Order.PlaceOrderAsync(ticker, Net.Enums.OrderSide.Buy, Net.Enums.OrderType.Market, (decimal?)0.01);
-
-                var pos = await _client.FuturesUsdt.GetPositionInformationAsync(ticker);
-                Positions.Add(new TradingPosition(ticker, 0.01, PositionDirection.Long));
+                await Long(ticker, amount);
                 return true;
             }
 
-            // If all signals sell, trigger market short
             if (entrySignals.All(x => x.Action == TradeDecision.Short))
             {
-                var iD = await _client.FuturesUsdt.Order.PlaceOrderAsync(ticker, Net.Enums.OrderSide.Sell, Net.Enums.OrderType.Market, (decimal?)0.01);
-
-                var pos = await _client.FuturesUsdt.GetPositionInformationAsync(ticker);
-                Positions.Add(new TradingPosition(ticker, 0.01, PositionDirection.Short));
+                await Short(ticker, amount);
                 return true;
             }
             return false;
+        }
+
+        private async Task Long(string ticker, double amount)
+        {
+            var iD = await _client.FuturesUsdt.Order.PlaceOrderAsync(ticker, 
+                Net.Enums.OrderSide.Buy,
+                Net.Enums.OrderType.Market, 
+                (decimal?)amount, 
+                Net.Enums.PositionSide.Long);
+
+            var pos = await _client.FuturesUsdt.GetPositionInformationAsync(ticker);
+            Positions.Add(new TradingPosition(ticker, 0.01, PositionDirection.Long));
+        }
+
+        private async Task Short(string ticker, double amount)
+        {
+            var iD = await _client.FuturesUsdt.Order.PlaceOrderAsync(ticker, 
+                Net.Enums.OrderSide.Sell, 
+                Net.Enums.OrderType.Market, 
+                (decimal?)amount, 
+                Net.Enums.PositionSide.Short);
+
+            var pos = await _client.FuturesUsdt.GetPositionInformationAsync(ticker);
+            Positions.Add(new TradingPosition(ticker, 0.01, PositionDirection.Short));
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
