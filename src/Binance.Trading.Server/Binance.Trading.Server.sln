@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binance.Trading.Domain", ".
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binance.Trading.Server", "Binance.Trading.Server.csproj", "{02D76C75-5A3F-4D82-A50A-FEDBBF4EA2B2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binance.Net", "..\Binance.Net\Binance.Net\Binance.Net.csproj", "{7A17107F-1129-4B38-964D-E7E99F52D518}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binance.Net", "..\Binance.Net\Binance.Net.csproj", "{EDE7A335-EEF0-4B4A-B2C1-D010E22336FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{02D76C75-5A3F-4D82-A50A-FEDBBF4EA2B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02D76C75-5A3F-4D82-A50A-FEDBBF4EA2B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02D76C75-5A3F-4D82-A50A-FEDBBF4EA2B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7A17107F-1129-4B38-964D-E7E99F52D518}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7A17107F-1129-4B38-964D-E7E99F52D518}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A17107F-1129-4B38-964D-E7E99F52D518}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7A17107F-1129-4B38-964D-E7E99F52D518}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDE7A335-EEF0-4B4A-B2C1-D010E22336FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDE7A335-EEF0-4B4A-B2C1-D010E22336FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDE7A335-EEF0-4B4A-B2C1-D010E22336FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDE7A335-EEF0-4B4A-B2C1-D010E22336FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
